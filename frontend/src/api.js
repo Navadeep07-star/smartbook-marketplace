@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-    baseURL: 'http://localhost:8081/api/v1',
+    baseURL: 'https://smartbook-marketplace.onrender.com',
     headers: {
         'Content-Type': 'application/json',
     }
