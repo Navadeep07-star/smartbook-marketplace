@@ -75,7 +75,7 @@ function App() {
     setSelectedCategory(categoryId);
     try {
       setMessage(`Searching active tables for sector: ${categoryId}...`);
-      const response = await API.get(`/auth/providers?category=${categoryId}`);
+      const response = await API.get(`/api/v1/auth/providers?category=${categoryId}`);
       setProvidersList(response.data);
       setMessage('');
     } catch (error) {
@@ -87,7 +87,7 @@ function App() {
   const handleViewProviderTimeline = async (provider) => {
     try {
       setSelectedProvider(provider);
-      const response = await API.get(`/slots/available?providerId=${provider.id}`);
+      const response = await API.get(`/api/v1/slots/available?providerId=${provider.id}`);
       setAvailableSlots(response.data);
       setCurrentPage('slots');
     } catch (error) {
@@ -99,12 +99,12 @@ function App() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await API.post('/auth/signin', { email, password });
+      const response = await API.post('/api/v1/auth/signin', { email, password });
       localStorage.setItem('token', response.data.token);
       
    
       const userPayload = { 
-        fullName: response.data.email || 'Verified User', 
+        fullName: response.data.fullName || response.data.email || 'Verified User', 
         roles: response.data.roles || ['ROLE_USER'] 
       };
       
@@ -130,12 +130,12 @@ function App() {
         email, 
         password, 
         fullName, 
-        roles: [regRole],
+        roles: regRole === 'provider' ? ['ROLE_PROVIDER'] : ['ROLE_USER'],
         businessName: regRole === 'provider' ? businessName : null,
         category: regRole === 'provider' ? category : null
       };
 
-      await API.post('/auth/signup', payload);
+      await API.post('/api/v1/auth/signup', payload);
       setMessage('Registration successful! Please sign in.');
       setCurrentPage('login');
       
