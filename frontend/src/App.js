@@ -130,7 +130,7 @@ function App() {
         email, 
         password, 
         fullName, 
-        roles: regRole === 'provider' ? ['ROLE_PROVIDER'] : ['ROLE_USER'],
+        roles: [regRole],
         businessName: regRole === 'provider' ? businessName : null,
         category: regRole === 'provider' ? category : null
       };
