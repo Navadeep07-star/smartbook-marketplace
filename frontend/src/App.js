@@ -52,7 +52,7 @@ function App() {
 
   const fetchProviderRequests = async () => {
     try {
-      const response = await API.get('/bookings/provider-requests');
+      const response = await API.get('/api/v1/bookings/provider-requests');
       setProviderRequests(response.data);
     } catch (error) {
       console.error("Error pulling provider queue logs:", error);
@@ -62,7 +62,7 @@ function App() {
   
   const fetchCustomerHistory = async (pageTarget = 0) => {
     try {
-      const response = await API.get(`/bookings/customer-history?page=${pageTarget}&size=3`);
+      const response = await API.get(`/api/v1/bookings/customer-history?page=${pageTarget}&size=3`);
       setCustomerHistory(response.data.content || []);
       setTotalPages(response.data.totalPages || 1);
       setCurrentPageNumber(pageTarget);
@@ -153,7 +153,7 @@ function App() {
     try {
       const formattedStart = startTime.replace('T', ' ') + ':00';
       const formattedEnd = endTime.replace('T', ' ') + ':00';
-      await API.post('/slots/create', { startTime: formattedStart, endTime: formattedEnd });
+      await API.post('/api/v1/slots/create', { startTime: formattedStart, endTime: formattedEnd });
       setMessage('Business availability allocated in database successfully!');
       setStartTime('');
       setEndTime('');
@@ -175,7 +175,7 @@ function App() {
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      const response = await API.post(`/bookings/${activeCheckoutSlotId}`);
+      const response = await API.post(`/api/v1/bookings/${activeCheckoutSlotId}`);
       
       setMessage(`Success: ${response.data}`);
       setIsCheckoutOpen(false); 
@@ -196,7 +196,7 @@ function App() {
   const handleUpdateStatus = async (bookingId, decisionStatus) => {
     try {
       setMessage(`Syncing state alteration [${decisionStatus}] with server bounds...`);
-      const response = await API.put(`/bookings/${bookingId}/status?status=${decisionStatus}`);
+      const response = await API.put(`/api/v1/bookings/${bookingId}/status?status=${decisionStatus}`);
       setMessage(response.data);
       fetchProviderRequests(); 
     } catch (error) {
