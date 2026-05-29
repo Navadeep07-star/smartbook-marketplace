@@ -7,7 +7,7 @@ const API = axios.create({
     }
 });
 
-// Automatically inject our JWT token into the headers of every single request if it exists
+
 API.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
     if (token) {
