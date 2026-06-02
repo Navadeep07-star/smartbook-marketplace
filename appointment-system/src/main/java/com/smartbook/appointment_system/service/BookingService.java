@@ -27,10 +27,14 @@ public class BookingService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private NotificationService notificationService;
+
+
 
     @Transactional
     public Booking bookAppointment(Long slotId, String userEmail){
-        // Your database locking query remains fully intact!
+
         Slot slot = slotRepository.findByIdWithLock(slotId)
                 .orElseThrow(() -> new RuntimeException("Slot not found"));
 
@@ -51,8 +55,22 @@ public class BookingService {
         booking.setAmount(100.0);
         booking.setStatus("PENDING");
 
-        // Save and return cleanly
-        return bookingRepository.save(booking);
+        Booking savedBooking =  bookingRepository.save(booking);
+
+        try {
+            notificationService.sendLifecycleNotification(
+                    slot.getProvider().getEmail(),
+                    user.getFullName(),
+                    slot.getProvider().getFullName(),
+                    slot.getStartTime().toString(),
+                    "PENDING"
+            );
+        } catch (Exception e) {
+            System.err.println("Non-blocking email failure during slot booking: " + e.getMessage());
+        }
+
+        return savedBooking;
+
     }
     @Transactional
     public Booking updateBookingStatus(Long bookingId, String newStatus) {
@@ -60,6 +78,7 @@ public class BookingService {
                 .orElseThrow(() -> new RuntimeException("Booking record not found"));
 
         Slot slot = booking.getSlot();
+        User user = booking.getUser();
 
         if ("ACCEPTED".equalsIgnoreCase(newStatus)) {
             booking.setStatus("ACCEPTED");
@@ -71,7 +90,20 @@ public class BookingService {
         }
 
         slotRepository.save(slot);
-        return bookingRepository.save(booking);
+        Booking savedBooking = bookingRepository.save(booking);
+        try {
+            notificationService.sendLifecycleNotification(
+                    user.getEmail(),
+                    user.getFullName(),
+                    slot.getProvider().getFullName(),
+                    slot.getStartTime().toString(),
+                    newStatus
+            );
+        } catch (Exception e) {
+            System.err.println("Non-blocking email failure during status update: " + e.getMessage());
+        }
+
+        return savedBooking;
     }
 
     public List<Booking> getBookingsForProvider(String providerEmail) {
