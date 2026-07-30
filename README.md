@@ -1,48 +1,50 @@
 # SmartBook | Multi-Service Resource Scheduling Hub
 
-SmartBook is a full-stack distributed web application designed to bridge the gap between service customers and independent service merchants (such as medical staff, automotive mechanics, electricians, and technicians). The platform provides real-time availability tracking, transparent multi-sector directories, and transactional booking lifecycle flows.
+SmartBook is a full-stack web application built to connect customers with independent service merchants (such as medical staff, mechanics, electricians, and technicians). It provides real-time slot selection, a categorized service directory, role-based access control, and transactional booking flows.
 
 ---
 
 ## 🏗️ System Architecture & Data Flow
 
-The platform is designed around a decoupled, single-page client architecture that interacts seamlessly with a secure, transactional REST API backend.
+The platform follows a decoupled client-server architecture:
 
-
-1. **Client Layer Layer (React.js):** Functions as a reactive state engine. It manages JWT state scopes, intercepts secure API requests, handles routing variations, and maps dynamic database records efficiently.
-2. **Application Core Layer (Spring Boot):** Enforces business logic layers, executes object-relational mapping (JPA/Hibernate), filters security parameters using Spring Security filters, and processes asynchronous execution pools.
-3. **Relational Database Engine (MySQL):** Handles persistent relational entities, mapping constraints, left-join queries, and transactional data integrity during bookings.
+1. **Client Layer (React.js):** Manages UI state, handles JWT authentication storage, intercepts API requests with Axios, and dynamically renders routes based on user roles.
+2. **Application Core (Spring Boot):** Enforces core business logic, handles ORM mapping via JPA/Hibernate, secures endpoints using Spring Security, and manages background notification tasks.
+3. **Relational Database Engine (PostgreSQL / MySQL):** Maintains persistent entities, foreign key constraints, indexes, and transactional data integrity during slot reservations.
 
 ---
 
-## ⚡ Core Technical Features 
+## ⚡ Core Technical Features
 
-* **Role-Based Security Control:** Fully secure environment powered by Spring Security and stateful JSON Web Tokens (JWT). Differentiates between Customer nodes and Merchant nodes to route access dashboards dynamically.
-* **Server-Side Database Pagination:** Leverages Spring Data JPA Repository page indexing to stream historical reservation records into chunks, drastically optimizing memory lookup scales.
-* **Asynchronous Notification Thread Pools:** Backend operations use asynchronous multi-threading routines to dispatch system confirmation receipts without locking main HTTP request execution paths.
-* **Simulated Checkout Gateway Architecture:** Implements a realistic front-facing payment clearance modal that mimics tokenized B2C payment structures while maintaining enterprise safety principles.
+* **Role-Based Access Control:** Secured with Spring Security and JWT. Supports distinct dashboards and authorization scopes for Customers, Providers, and Admins.
+* **Automated Data Seeding:** Uses a Spring Boot `CommandLineRunner` to seed essential database roles (`ROLE_USER`, `ROLE_PROVIDER`, `ROLE_ADMIN`) on application startup if missing.
+* **Server-Side Pagination:** Uses Spring Data JPA `Pageable` requests to chunk and fetch historical reservation records efficiently.
+* **Asynchronous Email Processing:** Dispatches booking confirmation receipts on background thread pools to prevent blocking main HTTP request execution.
+* **Simulated Checkout Flow:** Includes a modal-based payment confirmation step to mimic real-world booking clearance workflows.
 
 ---
 
 ## 🛠️ Tech Stack & Tooling
 
-* **Backend Development Engine:** Java 21, Spring Boot 3, Spring Data JPA, Spring Security, Hibernate
-* **Frontend Web Framework:** React.js, Axios Client, Lucide React Icon Pack, Custom CSS3 Modules
-* **Relational Database Management System:** MySQL 8.0 Engine
-* **Communication & Protocols:** RESTful API Architecture, JSON Web Tokens (JWT)
+* **Backend Development:** Java 21, Spring Boot 3, Spring Data JPA, Spring Security, Hibernate
+* **Frontend Development:** React.js, Axios, Lucide Icons, Custom CSS Modules
+* **Database Management:** PostgreSQL (Production on Render), MySQL 8.0 (Local Development)
+* **Protocols & Auth:** RESTful APIs, JSON Web Tokens (JWT)
+* **Hosting & DevOps:** Render (Web Service & Managed PostgreSQL)
 
 ---
 
 ## ⚙️ Local Development Environment Setup
 
 ### ☕ Prerequisites
-* Java Development Kit (JDK 21) installed
-* Node.js (v20+ runtimes) installed
-* MySQL Server instance active on port `3306`
+* Java Development Kit (JDK 21)
+* Node.js (v20+)
+* PostgreSQL or MySQL server active locally
 
 ### 🏃 Running the Platform
 
-#### 1. Database Init
-Create a local schema instance inside your MySQL terminal console:
+#### 1. Database Initialization
+Create a local database instance inside your database client:
+
 ```sql
 CREATE DATABASE smart_booking_db;
