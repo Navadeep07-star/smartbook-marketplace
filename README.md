@@ -32,19 +32,3 @@ The platform follows a decoupled client-server architecture:
 * **Protocols & Auth:** RESTful APIs, JSON Web Tokens (JWT)
 * **Hosting & DevOps:** Render (Web Service & Managed PostgreSQL)
 
----
-
-## ⚙️ Local Development Environment Setup
-
-### ☕ Prerequisites
-* Java Development Kit (JDK 21)
-* Node.js (v20+)
-* PostgreSQL or MySQL server active locally
-
-### 🏃 Running the Platform
-
-#### 1. Database Initialization
-Create a local database instance inside your database client:
-
-```sql
-CREATE DATABASE smart_booking_db;
