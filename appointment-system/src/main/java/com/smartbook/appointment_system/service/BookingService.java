@@ -32,7 +32,7 @@ public class BookingService {
 
 
 
-    @Transactional
+   @Transactional
     public Booking bookAppointment(Long slotId, String userEmail){
 
         Slot slot = slotRepository.findByIdWithLock(slotId)
@@ -42,20 +42,22 @@ public class BookingService {
             throw new RuntimeException("This slot is already booked!");
         }
 
-        slot.setAvailable(false);
-        slotRepository.save(slot);
-
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Booking booking = new Booking();
+        Booking booking = bookingRepository.findBySlotId(slotId)
+                .orElse(new Booking()); 
+
+        slot.setAvailable(false);
+        slotRepository.save(slot);
+
         booking.setSlot(slot);
         booking.setUser(user);
         booking.setBookingTime(LocalDateTime.now());
         booking.setAmount(100.0);
         booking.setStatus("PENDING");
 
-        Booking savedBooking =  bookingRepository.save(booking);
+        Booking savedBooking = bookingRepository.save(booking);
 
         try {
             notificationService.sendLifecycleNotification(
@@ -70,8 +72,8 @@ public class BookingService {
         }
 
         return savedBooking;
-
     }
+    
     @Transactional
     public Booking updateBookingStatus(Long bookingId, String newStatus) {
         Booking booking = bookingRepository.findById(bookingId)
